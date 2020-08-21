@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Dto;
+
 /**
  * Class Product
  *
@@ -12,17 +13,14 @@ class Product
      * @var string
      */
     private $sku;
-
     /**
      * @var string
      */
     private $description;
-
     /**
      * @var float
      */
     private $normalPrice;
-
     /**
      * @var float|null
      */

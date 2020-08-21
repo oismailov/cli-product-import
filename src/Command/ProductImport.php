@@ -4,12 +4,17 @@ namespace App\Command;
 
 use App\Dto;
 use App\Service;
+use App\Validator;
 use Doctrine\ORM\EntityManagerInterface;
+use League\Csv;
 use League\Csv\Reader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductImport extends Command
 {
@@ -17,8 +22,6 @@ class ProductImport extends Command
      * @var EntityManagerInterface
      */
     private $em;
-
-
     /**
      * @var Service\Product\Product
      */
@@ -39,22 +42,31 @@ class ProductImport extends Command
             ->setDescription('Import products from csv file.');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
-     * @throws \League\Csv\Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
         $io->title('Starting products import...');
 
         try {
-            $reader = Reader::createFromPath('%kernel.root_dir%/../data/products.csv');
-            $reader->setHeaderOffset(0);
+            $reader = $this->getReader();
+            $validator = $this->getValidator();
 
-            foreach ($reader->getRecords() as $record) {
+            foreach ($reader->getRecords() as $rowId => $record) {
+                $productRow = new Validator\Product($rowId, $record);
+
+                if ($errors = $validator->validate($productRow)) {
+                    foreach ($errors as $item) {
+                        echo "At row:"
+                            . $item->getRoot()->getRowId()
+                            . " - Property: "
+                            . $item->getPropertyPath()
+                            . ' - Message: '
+                            . $item->getMessage()
+                            . "\n";
+                    }
+                    continue;
+                }
+
                 $productDto = new Dto\Product($record);
 
                 if ($product = $this->productService->findOneBySku($productDto->getSku())) {
@@ -65,10 +77,32 @@ class ProductImport extends Command
             }
 
             $this->em->flush();
+            $io->success('Finished product import!');
         } catch (\Throwable $exception) {
-            $this->em->rollback();
+            $io->error(sprintf('There was an error during product import: %s!', $exception->getMessage()));
         }
+    }
 
-        $io->success('Finished product import!');
+    /**
+     * @return Csv\AbstractCsv|Reader
+     *
+     * @throws Csv\Exception
+     */
+    private function getReader()
+    {
+        $reader = Reader::createFromPath('%kernel.root_dir%/../data/products.csv');
+        $reader->setHeaderOffset(0);
+
+        return $reader;
+    }
+
+    /**
+     * @return RecursiveValidator|ValidatorInterface
+     */
+    private function getValidator()
+    {
+        return Validation::createValidatorBuilder()
+            ->addMethodMapping('loadValidatorMetadata')
+            ->getValidator();
     }
 }
