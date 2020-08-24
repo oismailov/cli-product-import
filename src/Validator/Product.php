@@ -37,7 +37,7 @@ class Product
     public function __construct(int $rowId, array $product)
     {
         $this->rowId = $rowId;
-        $this->sku = $product['sku'];
+        $this->sku = $product['SKU'];
         $this->description = $product['description'];
         $this->normalPrice = $product['normalPrice'];
         $this->specialPrice = $product['specialPrice'];
@@ -48,7 +48,7 @@ class Product
         return $this->rowId;
     }
 
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('sku', new Assert\NotBlank());
         $metadata->addPropertyConstraint('sku', new CustomAssert\XSSProtection\ContainsMaliciousCharacters());

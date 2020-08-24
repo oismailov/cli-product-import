@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class SpecialPriceValidator
 {
-    public function validate($object, ExecutionContextInterface $context)
+    public static function validate($object, ExecutionContextInterface $context)
     {
         $product = $context->getObject();
         $normalPrice = $product->normalPrice;

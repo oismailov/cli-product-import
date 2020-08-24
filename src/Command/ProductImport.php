@@ -2,16 +2,13 @@
 
 namespace App\Command;
 
-use App\Dto;
 use App\Service;
-use App\Validator;
-use Doctrine\ORM\EntityManagerInterface;
 use League\Csv;
 use League\Csv\Reader;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -19,68 +16,51 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ProductImport extends Command
 {
     /**
-     * @var EntityManagerInterface
+     * @var Service\Import\Import
      */
-    private $em;
-    /**
-     * @var Service\Product\Product
-     */
-    private $productService;
+    private $importService;
 
-    public function __construct(EntityManagerInterface $em, Service\Product\Product $productService)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger, Service\Import\Import $importService)
     {
         parent::__construct();
 
-        $this->em = $em;
-        $this->productService = $productService;
+        $this->importService = $importService;
+        $this->logger = $logger;
     }
 
-    protected function configure()
+    /**
+     * @return void
+     */
+    protected function configure(): void
     {
-        $this
-            ->setName('product:import')
+        $this->setName('product:import')
             ->setDescription('Import products from csv file.');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('Starting products import...');
+        $this->logger->info('Starting products import...');
 
         try {
-            $reader = $this->getReader();
-            $validator = $this->getValidator();
-
-            foreach ($reader->getRecords() as $rowId => $record) {
-                $productRow = new Validator\Product($rowId, $record);
-
-                if ($errors = $validator->validate($productRow)) {
-                    foreach ($errors as $item) {
-                        echo "At row:"
-                            . $item->getRoot()->getRowId()
-                            . " - Property: "
-                            . $item->getPropertyPath()
-                            . ' - Message: '
-                            . $item->getMessage()
-                            . "\n";
-                    }
-                    continue;
-                }
-
-                $productDto = new Dto\Product($record);
-
-                if ($product = $this->productService->findOneBySku($productDto->getSku())) {
-                    $this->em->persist($this->productService->update($product, $productDto));
-                } else {
-                    $this->em->persist($this->productService->create($productDto));
-                }
-            }
-
-            $this->em->flush();
-            $io->success('Finished product import!');
+            $this->importService->import($this->getReader(), $this->getValidator());
+            $this->logger->info('Finished product import!');
         } catch (\Throwable $exception) {
-            $io->error(sprintf('There was an error during product import: %s!', $exception->getMessage()));
+            $this->logger->debug(sprintf('There was an error during product import: %s!', $exception->getMessage()));
         }
+
+        //added return statement to hide this error https://github.com/symfony/symfony/issues/33747
+        return 0;
     }
 
     /**

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
-class ContainsMaliciousCharactersValidation extends ConstraintValidator
+class ContainsMaliciousCharactersValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
@@ -26,7 +26,7 @@ class ContainsMaliciousCharactersValidation extends ConstraintValidator
             throw new UnexpectedValueException($value, 'float');
         }
 
-        if (preg_match('/(\b)(on\S+)(\s*)=|javascript|(<\s*)(\/*)script/gm', $value, $matches)) {
+        if (preg_match('/(\b)(on\S+)(\s*)=|javascript|(<\s*)(\/*)script/', $value, $matches)) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ xss }}', $value)
                 ->addViolation();

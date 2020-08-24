@@ -28,7 +28,7 @@ class Product
 
     public function __construct(array $product)
     {
-        $this->sku = $product['sku'];
+        $this->sku = $product['SKU'];
         $this->description = $product['description'];
         $this->normalPrice = $product['normalPrice'];
         $this->specialPrice = $product['specialPrice'];

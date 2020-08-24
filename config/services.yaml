@@ -27,9 +27,9 @@ services:
     resource: '../src/Controller/'
     tags: ['controller.service_arguments']
 
-  console_command.product_import:
-    class: App\Command\ProductImport
-    arguments:
-      - "@doctrine.orm.entity_manager"
-    tags:
-      - { name: console.command }
+#  console_command.product_import:
+#    class: App\Service\Import\Service
+#    arguments:
+#      - "@doctrine.orm.entity_manager"
+#    tags:
+#      - { name: console.command }
