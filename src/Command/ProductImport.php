@@ -70,7 +70,7 @@ class ProductImport extends Command
                 null,
                 InputArgument::OPTIONAL,
                 'Full file path',
-                'data/products_for_test.csv'
+                'data/products.csv'
             );
     }
 
