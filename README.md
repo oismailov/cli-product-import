@@ -11,8 +11,9 @@
 - `php bin/console doctrine:migrations:migrate --no-interaction`
 
 ## Run import
-- Test data is in `data/products.csv` file.
-- `php bin/console product:import` -  cli command to run import
+- `php bin/console product:import -v --file_path=data/products_for_test.csv` -  cli command to run import  
+- `file_path` parameter is optional
+- Default file is located in `data/products.csv`
 
 ## Output
 - `php bin/console product:import` - minimum data with basic info and no errors.

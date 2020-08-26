@@ -6,6 +6,10 @@ use App\Dto;
 use App\Entity;
 use App\Repository;
 
+/**
+ * Class Service
+ * @package App\Service\Product
+ */
 class Service implements Product
 {
     /**
@@ -14,6 +18,8 @@ class Service implements Product
     private $productRepository;
 
     /**
+     * Service constructor.
+     *
      * @param Repository\ProductRepository $productRepository
      */
     public function __construct(Repository\ProductRepository $productRepository)
@@ -22,6 +28,8 @@ class Service implements Product
     }
 
     /**
+     * Create product from provided dto object.
+     *
      * @param Dto\Product $productDto
      *
      * @return Entity\Product
@@ -36,6 +44,8 @@ class Service implements Product
     }
 
     /**
+     * Update product from provided dto object.
+     *
      * @param Entity\Product $product
      * @param Dto\Product $productDto
      *
@@ -50,6 +60,8 @@ class Service implements Product
     }
 
     /**
+     * Find product by sku value.
+     *
      * @param string $sku
      *
      * @return Entity\Product|null

@@ -37,16 +37,33 @@ class Product
      */
     private $specialPrice;
 
+    /**
+     * Get id.
+     *
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    /**
+     * Get sku.
+     *
+     * @return string|null
+     */
     public function getSku(): ?string
     {
         return $this->sku;
     }
 
+    /**
+     * Set sku.
+     *
+     * @param string $sku
+     *
+     * @return $this
+     */
     public function setSku(string $sku): self
     {
         $this->sku = $sku;
@@ -54,11 +71,23 @@ class Product
         return $this;
     }
 
+    /**
+     * Get description.
+     *
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
+    /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return $this
+     */
     public function setDescription(string $description): self
     {
         $this->description = $description;
@@ -66,11 +95,23 @@ class Product
         return $this;
     }
 
+    /**
+     * Get normalPrice.
+     *
+     * @return float|null
+     */
     public function getNormalPrice(): ?float
     {
         return $this->normalPrice;
     }
 
+    /**
+     * Set normalPrice.
+     *
+     * @param float $normalPrice
+     *
+     * @return $this
+     */
     public function setNormalPrice(float $normalPrice): self
     {
         $this->normalPrice = $normalPrice;
@@ -78,11 +119,22 @@ class Product
         return $this;
     }
 
+    /**
+     * Get specialPrice.
+     *
+     * @return float|null
+     */
     public function getSpecialPrice(): ?float
     {
         return $this->specialPrice;
     }
 
+    /**
+     * Set specialPrice.
+     * @param float|null $specialPrice
+     *
+     * @return $this
+     */
     public function setSpecialPrice(?float $specialPrice): self
     {
         $this->specialPrice = $specialPrice;

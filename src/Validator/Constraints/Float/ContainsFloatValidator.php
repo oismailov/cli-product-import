@@ -7,9 +7,23 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
+/**
+ * Class ContainsFloatValidator
+ * Validator checks if argument is a float value.
+ *
+ * @package App\Validator\Constraints\Float
+ */
 class ContainsFloatValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    /**
+     * Validate value against float rules.
+     *
+     * @param mixed $value
+     * @param Constraint $constraint
+     *
+     * @return void
+     */
+    public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof ContainsFloat) {
             throw new UnexpectedTypeException($constraint, ContainsFloat::class);

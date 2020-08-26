@@ -1,20 +1,37 @@
 <?php
 
 namespace App\Command;
+/**
+ * Set memory limit of 512MB to allow insert up to 50k rows.
+ */
+ini_set("memory_limit", 512);
 
 use App\Service;
+use App\Traits;
+use InvalidArgumentException;
 use League\Csv;
 use League\Csv\Reader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Class ProductImport
+ *
+ * @package App\Command
+ */
 class ProductImport extends Command
 {
+    /**
+     * Traits
+     */
+    use Traits\Validator;
+
     /**
      * @var Service\Import\Import
      */
@@ -25,6 +42,12 @@ class ProductImport extends Command
      */
     private $logger;
 
+    /**
+     * ProductImport constructor.
+     *
+     * @param LoggerInterface $logger
+     * @param Service\Import\Import $importService
+     */
     public function __construct(LoggerInterface $logger, Service\Import\Import $importService)
     {
         parent::__construct();
@@ -34,15 +57,26 @@ class ProductImport extends Command
     }
 
     /**
+     * Command configuration.
+     *
      * @return void
      */
     protected function configure(): void
     {
         $this->setName('product:import')
-            ->setDescription('Import products from csv file.');
+            ->setDescription('Import products from csv file.')
+            ->addOption(
+                'file_path',
+                null,
+                InputArgument::OPTIONAL,
+                'Full file path',
+                'data/products_for_test.csv'
+            );
     }
 
     /**
+     * Command execution handler.
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      *
@@ -52,8 +86,12 @@ class ProductImport extends Command
     {
         $this->logger->info('Starting products import...');
 
+        $file = $input->getOption('file_path');
+
         try {
-            $this->importService->import($this->getReader(), $this->getValidator());
+            $this->validateFile($file);
+
+            $this->importService->import($this->getReader($file), $this->getValidator());
             $this->logger->info('Finished product import!');
         } catch (\Throwable $exception) {
             $this->logger->debug(sprintf('There was an error during product import: %s!', $exception->getMessage()));
@@ -64,19 +102,25 @@ class ProductImport extends Command
     }
 
     /**
+     * Get csv file reader.
+     *
+     * @param string $file
+     *
      * @return Csv\AbstractCsv|Reader
      *
      * @throws Csv\Exception
      */
-    private function getReader()
+    private function getReader(string $file)
     {
-        $reader = Reader::createFromPath('%kernel.root_dir%/../data/products.csv');
+        $reader = Reader::createFromPath($file);
         $reader->setHeaderOffset(0);
 
         return $reader;
     }
 
     /**
+     * Get symfony validator.
+     *
      * @return RecursiveValidator|ValidatorInterface
      */
     private function getValidator()
@@ -84,5 +128,21 @@ class ProductImport extends Command
         return Validation::createValidatorBuilder()
             ->addMethodMapping('loadValidatorMetadata')
             ->getValidator();
+    }
+
+    /**
+     * Validate file existence and format.
+     *
+     * @param string $path
+     */
+    private function validateFile(string $path)
+    {
+        if (!file_exists($path)) {
+            throw new InvalidArgumentException(sprintf('File: %s doesn\'t exist', $path));
+        }
+
+        if (!$this->isCsvFile($path)) {
+            throw new InvalidArgumentException(sprintf('Format of the file: %s is not csv', $path));
+        }
     }
 }

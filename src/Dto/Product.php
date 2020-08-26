@@ -26,29 +26,54 @@ class Product
      */
     private $specialPrice;
 
+    /**
+     * Product constructor.
+     *
+     * @param array $product
+     */
     public function __construct(array $product)
     {
         $this->sku = $product['SKU'];
         $this->description = $product['description'];
         $this->normalPrice = $product['normalPrice'];
-        $this->specialPrice = $product['specialPrice'];
+        $this->specialPrice = $product['specialPrice'] ?? null;
     }
 
+    /**
+     * Get sku.
+     *
+     * @return string
+     */
     public function getSku(): string
     {
         return $this->sku;
     }
 
+    /**
+     * Get description.
+     *
+     * @return string
+     */
     public function getDescription(): string
     {
         return $this->description;
     }
 
+    /**
+     * Get normalPrice.
+     *
+     * @return float
+     */
     public function getNormalPrice(): float
     {
         return $this->normalPrice;
     }
 
+    /**
+     * Get specialPrice
+     *
+     * @return float|null
+     */
     public function getSpecialPrice(): ?float
     {
         return $this->specialPrice;

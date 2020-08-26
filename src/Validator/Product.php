@@ -34,20 +34,48 @@ class Product
      */
     public $specialPrice;
 
+    /**
+     * Product constructor.
+     *
+     * @param int $rowId
+     * @param array $product
+     */
     public function __construct(int $rowId, array $product)
     {
         $this->rowId = $rowId;
         $this->sku = $product['SKU'];
         $this->description = $product['description'];
         $this->normalPrice = $product['normalPrice'];
-        $this->specialPrice = $product['specialPrice'];
+        $this->specialPrice = $product['specialPrice'] ?? null;
     }
 
+    /**
+     * Get row id.
+     *
+     * @return int
+     */
     public function getRowId(): int
     {
         return $this->rowId;
     }
 
+    /**
+     * Get sku.
+     *
+     * @return string
+     */
+    public function getSku(): string
+    {
+        return $this->sku;
+    }
+
+    /**
+     * Run validation against class properties.
+     *
+     * @param ClassMetadata $metadata
+     *
+     * @return void
+     */
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('sku', new Assert\NotBlank());

@@ -7,9 +7,23 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
+/**
+ * Class ContainsMaliciousCharactersValidator
+ * Validator checks if argument has any malicious characters.
+ *
+ * @package App\Validator\Constraints\XSSProtection
+ */
 class ContainsMaliciousCharactersValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    /**
+     * Validate against malicious characters.
+     *
+     * @param mixed $value
+     * @param Constraint $constraint
+     *
+     * @return void
+     */
+    public function validate($value, Constraint $constraint): void
     {
         if (!$constraint instanceof ContainsMaliciousCharacters) {
             throw new UnexpectedTypeException($constraint, ContainsMaliciousCharacters::class);

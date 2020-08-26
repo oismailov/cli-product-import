@@ -2,6 +2,11 @@
 
 namespace App\Service\Statistics;
 
+/**
+ * Class Errors
+ *
+ * @package App\Service\Statistics
+ */
 class Errors
 {
     /**
@@ -17,16 +22,32 @@ class Errors
     /**
      * @var string
      */
+    private $sku;
+
+    /**
+     * @var string
+     */
     private $message;
 
-    public function __construct(int $rowId, string $property, string $message)
+    /**
+     * Errors constructor.
+     *
+     * @param int $rowId
+     * @param string $sku
+     * @param string $property
+     * @param string $message
+     */
+    public function __construct(int $rowId, string $sku, string $property, string $message)
     {
         $this->rowId = $rowId;
+        $this->sku = $sku;
         $this->property = $property;
         $this->message = $message;
     }
 
     /**
+     * Get row id.
+     *
      * @return int
      */
     public function getRowId(): int
@@ -35,6 +56,18 @@ class Errors
     }
 
     /**
+     * Get sku.
+     *
+     * @return string
+     */
+    public function getSku(): string
+    {
+        return $this->sku;
+    }
+
+    /**
+     * Get property name.
+     *
      * @return string
      */
     public function getProperty(): string
@@ -43,6 +76,8 @@ class Errors
     }
 
     /**
+     * Get message.
+     *
      * @return string
      */
     public function getMessage(): string

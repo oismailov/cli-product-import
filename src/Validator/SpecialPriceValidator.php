@@ -5,9 +5,22 @@ namespace App\Validator;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
+/**
+ * Class SpecialPriceValidator
+ *
+ * @package App\Validator
+ */
 class SpecialPriceValidator
 {
-    public static function validate($object, ExecutionContextInterface $context)
+    /**
+     * Check if specialPrice value is lower than normalPrice value.
+     *
+     * @param $object
+     * @param ExecutionContextInterface $context
+     *
+     * @return void
+     */
+    public static function validate($object, ExecutionContextInterface $context): void
     {
         $product = $context->getObject();
         $normalPrice = $product->normalPrice;

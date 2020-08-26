@@ -9,5 +9,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class ContainsFloat extends Constraint
 {
+    /**
+     * @var string
+     */
     public $message = 'The string "{{ float }}" contains an illegal character: it can only contains float values.';
 }

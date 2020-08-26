@@ -2,16 +2,21 @@
 
 namespace App\Tests\Service;
 
-use League\Csv;
-use League\Csv\Reader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+/**
+ * Class BaseService
+ *
+ * @package App\Tests\Service
+ */
 abstract class BaseService extends TestCase
 {
     /**
+     * Get symfony validator.
+     *
      * @return RecursiveValidator|ValidatorInterface
      */
     protected function getValidator()
