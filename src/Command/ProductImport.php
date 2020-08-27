@@ -1,10 +1,6 @@
 <?php
 
 namespace App\Command;
-/**
- * Set memory limit of 512MB to allow insert up to 50k rows.
- */
-ini_set("memory_limit", 512);
 
 use App\Service;
 use App\Traits;

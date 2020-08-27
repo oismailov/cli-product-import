@@ -23,7 +23,7 @@ class Product
     private $sku;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $description;
 

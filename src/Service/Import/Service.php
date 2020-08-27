@@ -102,6 +102,9 @@ class Service implements Import
      */
     private function processImport(Reader $reader, ValidatorInterface $validator): void
     {
+        //disable the SQL logger to prevent memory leaks.
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
+
         foreach ($reader->getRecords() as $rowId => $record) {
             if (!$this->isRowValid($rowId, $record, $validator)) {
                 continue;
