@@ -134,8 +134,10 @@ class ProductImport extends Command
      * Validate file existence and format.
      *
      * @param string $path
+     *
+     * @return void
      */
-    private function validateFile(string $path)
+    private function validateFile(string $path): void
     {
         if (!file_exists($path)) {
             throw new InvalidArgumentException(sprintf('File: %s doesn\'t exist', $path));

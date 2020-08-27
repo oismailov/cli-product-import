@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
 use Psr\Log\LoggerInterface;
 use Ramsey\Collection\Collection;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -122,7 +121,15 @@ class Service implements Import
         }
     }
 
-    private function compareProducts(Entity\Product $productEntity, Dto\Product $productDto)
+    /**
+     * Compare product entity and product dto objects
+     *
+     * @param Entity\Product $productEntity
+     * @param Dto\Product $productDto
+     *
+     * @return void
+     */
+    private function compareProducts(Entity\Product $productEntity, Dto\Product $productDto): void
     {
         if ($this->equalRecords($productEntity, $productDto)) {
             $this->resultCounter->incrementRowsSkipped();
@@ -146,11 +153,13 @@ class Service implements Import
         $productRow = new Validator\Product($rowId, $record);
         $errors = $validator->validate($productRow);
 
-        if ($errors->count() == 0) {
+        if ($errors->count() === 0) {
             return true;
         }
 
         $this->collectErrors($errors);
+
+        $this->resultCounter->incrementRowsSkipped();
 
         return false;
     }
@@ -165,7 +174,6 @@ class Service implements Import
     private function collectErrors(ConstraintViolationListInterface $errors): void
     {
         foreach ($errors as $item) {
-            $this->resultCounter->incrementRowsSkipped();
             $this->errors->add(
                 new Errors(
                     $item->getRoot()->getRowId(),
@@ -184,7 +192,7 @@ class Service implements Import
      */
     private function outputErrors(): void
     {
-        if ($this->errors->count() == 0) {
+        if ($this->errors->count() === 0) {
             return;
         }
 

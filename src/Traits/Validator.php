@@ -27,7 +27,7 @@ trait Validator
      */
     public function validateRowsLimit(Reader $reader, ValidatorInterface $validator): void
     {
-        if ($reader->count() == 0) {
+        if ($reader->count() === 0) {
             throw new InvalidArgumentException('Number of rows must be greater than 0.');
         }
 
@@ -47,7 +47,7 @@ trait Validator
     {
         $fileInfo = pathinfo($path);
 
-        return $fileInfo["extension"] == "csv";
+        return $fileInfo["extension"] === "csv";
 
     }
 
@@ -80,6 +80,5 @@ trait Validator
         }
 
         return $areEqual;
-
     }
 }
